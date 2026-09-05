@@ -1,0 +1,22 @@
+services:
+  # The Node.js Backend
+  api-server:
+    # Build the backend image from its directory
+    build: ./my-backend-folder 
+    # Expose port 3000 ONLY to the internal Docker network. 
+    # The public internet cannot reach this directly.
+    expose:
+      - "3000" 
+    restart: always
+
+  # The Vite Frontend & Nginx Proxy
+  frontend:
+    # Build the frontend image from its directory
+    build: ./my-frontend-folder 
+    # Map EC2's public port 80 to Nginx's internal port 80
+    ports:
+      - "80:80" 
+    # Ensure the backend starts first before Nginx tries to route to it
+    depends_on:
+      - api-server 
+    restart: always
